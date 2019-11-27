@@ -18,7 +18,7 @@ class MancalaState:
     the EightPuzzleSearchProblem class.
     """
 
-    def __init__( self, state ):
+    def __init__(self, state):
         """
           Constructs a new Mancala Board
                     ---------------------------------
@@ -32,9 +32,9 @@ class MancalaState:
         self.aiScore = state[0]            # default 0
         self.plScore = state[1]            # default 0
         self.board = state[2].copy()              # default np.full((2,6), 4)
-        self.boardShape = self.board.shape  # default (2,6) Mali: Can't we just hardcode since it's always the same?
+        self.boardShape = self.board.shape
 
-    def legalMoves(self,player):
+    def legalMoves(self, player):
         """
           Returns an tuple of legal moves from the current state.
           
@@ -46,21 +46,15 @@ class MancalaState:
 
         return -> [(0,0),(0,2),(0,5),(1,1),(1,4),(1,5)]             
         """
-
         frees = np.nonzero(self.board[player])
-        index = np.full((1,len(frees[0])),player)
+        index = np.full((1, len(frees[0])), player)
 
-        return np.column_stack((index[0],frees[0]))
-        # free = []
-        #
-        # for y in range(self.boardShape[0]):
-        #     for x in range(self.boardShape[1]):
-        #         if self.board[y][x] > 0:
-        #             free.append((x, y))
-        #
-        # return free
+        return np.column_stack((index[0], frees[0]))
 
-    def result(self, move, state = None):
+    def isTerminal(self):
+        return not np.any(self.board)  # No marbles in any of the holes
+
+    def result(self, move, state=None):
         """
           Returns a new Mancala state with the move applied to it.
 
@@ -166,19 +160,16 @@ class MancalaState:
         return self.__getAsciiString()
     
     
-leboard = np.array([[0,0,1,1,1,1],
-                    [1,1,0,1,1,0]])
+# leboard = np.array([[0, 0, 1, 1, 1, 1],
+#                     [1, 1, 0, 1, 1, 0]])
 
-#state = [0,0,np.full((2,6), 4)]
-    
-state = [0,0,leboard]
-    
+# state = [0,0,np.full((2,6), 4)]
+state = [30, 2, np.zeros((2, 6))]
+# state = [0, 0, leboard]
+
 a = MancalaState(state)
-moves = a.legalMoves(1)
-for move in moves:
-    print(move)
-    print(a.result( move, state))
 
+moves = a.legalMoves(1)
 
 # print(a.result( (1,3), state))
 # print(a.result( (0,2), state))
