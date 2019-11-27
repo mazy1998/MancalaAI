@@ -10,6 +10,7 @@ import numpy as np
 # state = [0,0,np.full((2,6), 4)]
 # MancalaState(state)
 
+
 class MancalaState:
     """
     This class defines the mechanics of the puzzle itself.  The
@@ -28,13 +29,12 @@ class MancalaState:
 
         """
         
-        self.aiScore = state[0]            #defult 0
-        self.plScore = state[1]            #defult 0
-        self.board = state[2]              #defult np.full((2,6), 4)
-        self.boardShape = self.board.shape #defualt (2,6)
-        
+        self.aiScore = state[0]            # default 0
+        self.plScore = state[1]            # default 0
+        self.board = state[2]              # default np.full((2,6), 4)
+        self.boardShape = self.board.shape  # default (2,6) Mali: Can't we just hardcode since it's always the same?
 
-    def legalMoves( self ):
+    def legalMoves(self):
         """
           Returns an tuple of legal moves from the current state.
           
@@ -46,28 +46,25 @@ class MancalaState:
 
         return -> [(0,0),(0,2),(0,5),(1,1),(1,4),(1,5)]             
         """
-        
-        free = []
-        
-        for y in range(self.boardShape[0]):
-            for x in range(self.boardShape[1]):
-                if self.board[y][x] > 0:
-                    free.append((x,y))
-                
-        return free
-        
+        return np.column_stack(np.nonzero(self.board))
+        # free = []
+        #
+        # for y in range(self.boardShape[0]):
+        #     for x in range(self.boardShape[1]):
+        #         if self.board[y][x] > 0:
+        #             free.append((x, y))
+        #
+        # return free
 
     def result(self, move, state = None):
         """
           Returns a new Mancala state with the move applied to it.
 
 
-        NOTE: This function *does not* change the current object.  Instead,
-        it returns a new object.
+        NOTE: This function *does not* change the current object. Instead, it returns a new object.
         """
-        
         amount = self.board[move[0]][move[1]]
-        current = [move[0],move[1]]
+        current = [move[0], move[1]]
         player = move[0]
         self.board[move[0]][move[1]] = 0
         
@@ -126,8 +123,6 @@ class MancalaState:
                 
            
             amount -= 1
-            
- 
         
         return self.board,self.plScore,self.aiScore
 
@@ -179,10 +174,10 @@ state = [0,0,leboard]
     
 a = MancalaState(state)
 print(a.legalMoves())
-print(a.result( (1,4), state))
-print(a.result( (1,3), state))
-print(a.result( (0,2), state))
-print(a.result( (0,3), state))
-print(a.result( (0,2), state))
-#print(a.result( (1,0), state))
-print(a.result( (0,1), state))
+# print(a.result( (1,4), state))
+# print(a.result( (1,3), state))
+# print(a.result( (0,2), state))
+# print(a.result( (0,3), state))
+# print(a.result( (0,2), state))
+# #print(a.result( (1,0), state))
+# print(a.result( (0,1), state))
