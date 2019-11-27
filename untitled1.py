@@ -20,7 +20,7 @@ Created on Fri Nov 22 15:47:27 2019
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
-import searchAlt
+# import searchAlt
 import random
 import math
 import numpy as np
@@ -318,3 +318,10 @@ for i in path:
     print(i)
 
 
+puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
+for i in range(100):
+    # Execute a random legal move
+    rand_player = random.choice([0, 1])
+    puzzle = puzzle.result(random.choice(puzzle.legalMoves(rand_player)))
+
+puzzle.result(puzzle.legalMoves(rand_player)[0])
