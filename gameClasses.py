@@ -32,7 +32,10 @@ class MancalaState:
         self.aiScore = state[0]            # default 0
         self.plScore = state[1]            # default 0
         self.board = state[2]              # default np.full((2,6), 4)
-        self.boardShape = self.board.shape  # default (2,6) Mali: Can't we just hardcode since it's always the same?
+        self.boardShape = self.board.shape  # default (2,6)
+
+    def isTerminal(self):
+        return not np.any(self.board)
 
     def legalMoves(self):
         """
@@ -165,17 +168,32 @@ class MancalaState:
         return self.__getAsciiString()
     
     
-leboard = np.array([[0,0,1,1,1,1],
-                    [1,1,0,1,1,0]])
+# leboard = np.array([[0,0,1,1,1,1],
+#                     [1,1,0,1,1,0]])
+
+leboard = np.zeros((2, 6))
 
 #state = [0,0,np.full((2,6), 4)]
     
 state = [0,0,leboard]
-    
+
 a = MancalaState(state)
+
+np.count_nonzero(a.board, axis=1)
+
+np.any(a.board)
+
+
 print(a.legalMoves())
+
+move = a.legalMoves()[0]
+
+# if move[0] == 1:
+#     lst = a.board[1] + a.plScore +
+
+
 # print(a.result( (1,4), state))
-# print(a.result( (1,3), state))
+print(a.result( (1,3), state))
 # print(a.result( (0,2), state))
 # print(a.result( (0,3), state))
 # print(a.result( (0,2), state))

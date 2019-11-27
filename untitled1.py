@@ -23,47 +23,49 @@ Created on Fri Nov 22 15:47:27 2019
 import searchAlt
 import random
 import math
-#import util
+import numpy as np
+from gameClasses import MancalaState
 
 # Module Classes
 
-EIGHT_PUZZLE_DATA = [[1, 0, 2, 3, 4, 5, 6, 7, 8],
-                     [1, 7, 8, 2, 3, 4, 5, 6, 0],
-                     [4, 3, 2, 7, 0, 5, 1, 6, 8],
-                     [5, 1, 3, 4, 0, 2, 6, 7, 8],
-                     [1, 2, 5, 7, 6, 8, 0, 4, 3],
-                     [0, 3, 1, 6, 8, 2, 7, 5, 4]]
+# EIGHT_PUZZLE_DATA = [[1, 0, 2, 3, 4, 5, 6, 7, 8],
+#                      [1, 7, 8, 2, 3, 4, 5, 6, 0],
+#                      [4, 3, 2, 7, 0, 5, 1, 6, 8],
+#                      [5, 1, 3, 4, 0, 2, 6, 7, 8],
+#                      [1, 2, 5, 7, 6, 8, 0, 4, 3],
+#                      [0, 3, 1, 6, 8, 2, 7, 5, 4]]
+#
+#
+# def loadEightPuzzle(puzzleNumber):
+#     """
+#       puzzleNumber: The number of the eight puzzle to load.
+#
+#       Returns an eight puzzle object generated from one of the
+#       provided puzzles in EIGHT_PUZZLE_DATA.
+#
+#       puzzleNumber can range from 0 to 5.
+#
+#       >>> print loadEightPuzzle(0)
+#       -------------
+#       | 1 |   | 2 |
+#       -------------
+#       | 3 | 4 | 5 |
+#       -------------
+#       | 6 | 7 | 8 |
+#       -------------
+#     """
+#     return EightPuzzleState(EIGHT_PUZZLE_DATA[puzzleNumber])
 
 
-def loadEightPuzzle(puzzleNumber):
-    """
-      puzzleNumber: The number of the eight puzzle to load.
-
-      Returns an eight puzzle object generated from one of the
-      provided puzzles in EIGHT_PUZZLE_DATA.
-
-      puzzleNumber can range from 0 to 5.
-
-      >>> print loadEightPuzzle(0)
-      -------------
-      | 1 |   | 2 |
-      -------------
-      | 3 | 4 | 5 |
-      -------------
-      | 6 | 7 | 8 |
-      -------------
-    """
-    return EightPuzzleState(EIGHT_PUZZLE_DATA[puzzleNumber])
-
-def createRandomEightPuzzle(moves=100):
+def createRandomMancala(moves=100):
     """
       moves: number of random moves to apply
 
-      Creates a random eight puzzle by applying
+      Creates a random mancala board by applying
       a series of 'moves'random moves to a solved
       puzzle.
     """
-    puzzle = EightPuzzleState([0,1,2,3,4,5,6,7,8])
+    puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
     for i in range(moves):
         # Execute a random legal move
         puzzle = puzzle.result(random.sample(puzzle.legalMoves(), 1)[0])
