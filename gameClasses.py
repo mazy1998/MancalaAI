@@ -31,10 +31,10 @@ class MancalaState:
         
         self.aiScore = state[0]            # default 0
         self.plScore = state[1]            # default 0
-        self.board = state[2]              # default np.full((2,6), 4)
+        self.board = state[2].copy()              # default np.full((2,6), 4)
         self.boardShape = self.board.shape  # default (2,6) Mali: Can't we just hardcode since it's always the same?
 
-    def legalMoves(self):
+    def legalMoves(self,player):
         """
           Returns an tuple of legal moves from the current state.
           
@@ -46,7 +46,11 @@ class MancalaState:
 
         return -> [(0,0),(0,2),(0,5),(1,1),(1,4),(1,5)]             
         """
-        return np.column_stack(np.nonzero(self.board))
+
+        frees = np.nonzero(self.board[player])
+        index = np.full((1,len(frees[0])),player)
+
+        return np.column_stack((index[0],frees[0]))
         # free = []
         #
         # for y in range(self.boardShape[0]):
@@ -62,17 +66,21 @@ class MancalaState:
 
 
         NOTE: This function *does not* change the current object. Instead, it returns a new object.
+        
         """
-        amount = self.board[move[0]][move[1]]
+        
+        newBoard = MancalaState(state)
+        
+        amount = newBoard.board[move[0]][move[1]]
         current = [move[0], move[1]]
-        player = move[0]
-        self.board[move[0]][move[1]] = 0
+#        player = move[0]
+        newBoard.board[move[0]][move[1]] = 0
         
         while amount != 0:
             
             if current[0] == 1:
                 if current[1] == 5:
-                    self.plScore += 1
+                    newBoard.plScore += 1
                     
                     if amount == 0:
                         current = [0,5]
@@ -81,20 +89,20 @@ class MancalaState:
                 else:
                     if amount == 1 and current[0] == move[0]:
                         
-                        if self.board[current[0]][current[1] + 1] == 0 and self.board[0][current[1] + 1] != 0 :
-                            self.plScore += 1 + self.board[0][current[1] + 1]
-                            self.board[0][current[1] + 1] = 0
+                        if newBoard.board[current[0]][current[1] + 1] == 0 and newBoard.board[0][current[1] + 1] != 0 :
+                            newBoard.plScore += 1 + newBoard.board[0][current[1] + 1]
+                            newBoard.board[0][current[1] + 1] = 0
                         else:
-                            self.board[current[0]][current[1] + 1] += 1
+                            newBoard.board[current[0]][current[1] + 1] += 1
                             current[1] += 1
                     else:
-                        self.board[current[0]][current[1] + 1] += 1
+                        newBoard.board[current[0]][current[1] + 1] += 1
                         current[1] += 1
                 
             elif current[0] == 0:
                 
                 if current[1] == 0:
-                    self.aiScore += 1
+                    newBoard.aiScore += 1
                     current = [1,0]
                     
                     if amount == 0:
@@ -103,28 +111,21 @@ class MancalaState:
                         current = [1,-1]
                 else:
                     if amount == 1 and current[0] == move[0]:
-                        if self.board[current[0]][current[1] - 1] == 0 and self.board[1][current[1] - 1] != 0 :
-                            self.aiScore += 1 + self.board[1][current[1] - 1]
-                            self.board[1][current[1] - 1] = 0
+                        if newBoard.board[current[0]][current[1] - 1] == 0 and newBoard.board[1][current[1] - 1] != 0 :
+                            newBoard.aiScore += 1 + newBoard.board[1][current[1] - 1]
+                            newBoard.board[1][current[1] - 1] = 0
                         else:
-                            self.board[0][current[1] - 1] += 1
+                            newBoard.board[0][current[1] - 1] += 1
                             current[0] -= 1
                             
                             
                     else:
-                        self.board[current[0]][current[1] - 1] += 1
+                        newBoard.board[current[0]][current[1] - 1] += 1
                         current[1] -= 1
-            
-            
-            print(amount,current)
-#            if amount == 1 and current[0] == move[0]:
-#                print(previousState)
-#                print(self.board)
-                
            
             amount -= 1
         
-        return self.board,self.plScore,self.aiScore
+        return newBoard.board,newBoard.plScore,newBoard.aiScore
 
     # Utilities for comparison and display
     def __eq__(self, other):
@@ -173,8 +174,12 @@ leboard = np.array([[0,0,1,1,1,1],
 state = [0,0,leboard]
     
 a = MancalaState(state)
-print(a.legalMoves())
-# print(a.result( (1,4), state))
+moves = a.legalMoves(1)
+for move in moves:
+    print(move)
+    print(a.result( move, state))
+
+
 # print(a.result( (1,3), state))
 # print(a.result( (0,2), state))
 # print(a.result( (0,3), state))
