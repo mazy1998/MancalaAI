@@ -322,6 +322,7 @@ puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
 for i in range(100):
     # Execute a random legal move
     rand_player = random.choice([0, 1])
-    puzzle = puzzle.result(random.choice(puzzle.legalMoves(rand_player)))
+    rand_legal_move = random.choice(puzzle.legalMoves(rand_player))
+    puzzle = puzzle.result(rand_legal_move)
 
 puzzle.result(puzzle.legalMoves(rand_player)[0])

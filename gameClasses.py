@@ -39,7 +39,7 @@ class MancalaState:
 
     def legalMoves(self, player):
         """
-          Returns an tuple of legal moves from the current state.
+          Returns an tuple of legal moves for player from the current state.
 
                     ---------------------------------
                    |    | 3 | 0 | 3 | 0 | 0 | 2 |    |
@@ -47,21 +47,21 @@ class MancalaState:
                    |    | 0 | 1 | 0 | 0 | 1 | 2 |    |
                     ---------------------------------
 
-        return -> [(0,0),(0,2),(0,5),(1,1),(1,4),(1,5)]
+        return -> [(0,0),(0,2),(0,5)] for player 0
+                  [(1,1),(1,4),(1,5)] for player 1
         """
         frees = np.nonzero(self.board[player])
         index = np.full((1, len(frees[0])), player)
 
         return np.column_stack((index[0], frees[0]))
 
-    def result(self, move, state=None):
+    def result(self, move):
         """
           Returns a new Mancala state with the move applied to it.
         NOTE: This function *does not* change the current object. Instead, it returns a new object.
 
         """
-
-        newBoard = MancalaState(self)
+        newBoard = MancalaState([self.aiScore, self.plScore, np.copy(self.board)])
 
         amount = newBoard.board[move[0]][move[1]]
         current = [move[0], move[1]]
@@ -143,18 +143,19 @@ class MancalaState:
         """
           Returns a display string for the maze
         """
-        lines = []
-        horizontalLine = ('-' * (13))
-        lines.append(horizontalLine)
-        for row in self.cells:
-            rowLine = '|'
-            for col in row:
-                if col == 0:
-                    col = ' '
-                rowLine = rowLine + ' ' + col.__str__() + ' |'
-            lines.append(rowLine)
-            lines.append(horizontalLine)
-        return '\n'.join(lines)
+        # lines = []
+        # horizontalLine = ('-' * (13))
+        # lines.append(horizontalLine)
+        # for row in self.cells:
+        #     rowLine = '|'
+        #     for col in row:
+        #         if col == 0:
+        #             col = ' '
+        #         rowLine = rowLine + ' ' + col.__str__() + ' |'
+        #     lines.append(rowLine)
+        #     lines.append(horizontalLine)
+        # return '\n'.join(lines)
+        return f'AI score: {self.aiScore}, Pl score: {self.plScore}.\n{self.board}'
 
     def __str__(self):
         return self.__getAsciiString()
@@ -171,7 +172,7 @@ state = [0,0,np.full((2,6), 4)]
 #
 a = MancalaState(state)
 #
-print(a.legalMoves(0))
+# print(a.legalMoves(1))
 #
 # move = a.legalMoves()[0]
 
@@ -179,7 +180,7 @@ print(a.legalMoves(0))
 #     lst = a.board[1] + a.plScore +
 
 
-# print(a.result( (1,4), state))
+print(a.result( (1,4)))
 # print(a.result( (1,3), state))
 # print(a.result( (0,2), state))
 # print(a.result( (0,3), state))
