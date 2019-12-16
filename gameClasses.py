@@ -122,19 +122,19 @@ class MancalaState:
         return newBoard
 
     # Utilities for comparison and display
-    def __eq__(self, other):
-        """
-            Overloads '==' such that two eightPuzzles with the same configuration
-          are equal.
-
-          >>> EightPuzzleState([0, 1, 2, 3, 4, 5, 6, 7, 8]) == \
-              EightPuzzleState([1, 0, 2, 3, 4, 5, 6, 7, 8]).result('left')
-          True
-        """
-        for row in range( 3 ):
-            if self.cells[row] != other.cells[row]:
-                return False
-        return True
+    # def __eq__(self, other):
+    #     """
+    #         Overloads '==' such that two eightPuzzles with the same configuration
+    #       are equal.
+    #
+    #       >>> EightPuzzleState([0, 1, 2, 3, 4, 5, 6, 7, 8]) == \
+    #           EightPuzzleState([1, 0, 2, 3, 4, 5, 6, 7, 8]).result('left')
+    #       True
+    #     """
+    #     for row in range( 3 ):
+    #         if self.cells[row] != other.cells[row]:
+    #             return False
+    #     return True
 
     def __hash__(self):
         return hash(str(self.cells))
@@ -161,14 +161,14 @@ class MancalaState:
         return self.__getAsciiString()
 
 
-# leboard = np.array([[0,0,1,1,1,1],
-#                     [1,1,0,1,1,0]])
+leboard = np.array([[3,2,1,1,1,1],
+                    [1,0,0,1,1,0]])
 
 # leboard = np.zeros((2, 6))
 
-state = [0,0,np.full((2,6), 4)]
+# state = [0,0,np.full((2,6), 4)]
 
-# state = [0,0,leboard]
+state = [0,0,leboard]
 #
 a = MancalaState(state)
 #
@@ -180,10 +180,10 @@ a = MancalaState(state)
 #     lst = a.board[1] + a.plScore +
 
 
-print(a.result( (1,4)))
-# print(a.result( (1,3), state))
-# print(a.result( (0,2), state))
-# print(a.result( (0,3), state))
-# print(a.result( (0,2), state))
-# #print(a.result( (1,0), state))
-# print(a.result( (0,1), state))
+# print(a.result( (1,4)))
+# print(a.result( (1,3)))
+# print(a.result( (0,2)))
+# print(a.result( (0,3)))
+# print(a.result( (0,2)))
+# print(a.result( (1,0)))
+# print(a.result( (0,1)))

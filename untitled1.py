@@ -68,7 +68,9 @@ def createRandomMancala(moves=100):
     puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
     for i in range(moves):
         # Execute a random legal move
-        puzzle = puzzle.result(random.sample(puzzle.legalMoves(), 1)[0])
+        rand_player = random.randint(0, 1)
+        rand_move = random.choice(puzzle.legalMoves(rand_player))
+        puzzle = puzzle.result(rand_move)
     return puzzle
 
 
@@ -254,75 +256,76 @@ class EightPuzzleState:
 
 
 
-class EightPuzzleSearchProblem(searchAlt.SearchProblem):
-    """
-      Implementation of a SearchProblem for the  Eight Puzzle domain
-
-      Each state is represented by an instance of an eightPuzzle.
-    """
-    def __init__(self,puzzle):
-        "Creates a new EightPuzzleSearchProblem which stores search information."
-        self.puzzle = puzzle
-
-    def getStartState(self):
-        return puzzle
-
-    def isGoalState(self,state):
-        return state.isGoal()
-
-    def getSuccessors(self,state):
-        """
-          Returns list of (successor, action, stepCost) pairs where
-          each succesor is either left, right, up, or down
-          from the original state and the cost is 1.0 for each
-        """
-        succ = []
-
-        for a in state.legalMoves():
-            #succ.append((state.result(a), a,state, 1))
-            succ.append((state.result(a,state),a))
-        return succ
-
-    def getCostOfActions(self, actions):
-        """
-        We already know the Cost of action in "getScuccessors" we add this to
-        
-        self.g in state.results
-        
-        """
-        return 1
-
-    
-    def getHeuristic(self,state):
-        
-        sum1 = 0
-        curr  = state.cells
-        
-        for x in range(3):
-            for y in range(3):
-                now = curr[x][y]
-                if now != 0:
-                    sum1 += (now%3-x) + (now//3-y)
-                
-        return sum1
+# class EightPuzzleSearchProblem(searchAlt.SearchProblem):
+#     """
+#       Implementation of a SearchProblem for the  Eight Puzzle domain
+#
+#       Each state is represented by an instance of an eightPuzzle.
+#     """
+#     def __init__(self,puzzle):
+#         "Creates a new EightPuzzleSearchProblem which stores search information."
+#         self.puzzle = puzzle
+#
+#     def getStartState(self):
+#         return puzzle
+#
+#     def isGoalState(self,state):
+#         return state.isGoal()
+#
+#     def getSuccessors(self,state):
+#         """
+#           Returns list of (successor, action, stepCost) pairs where
+#           each succesor is either left, right, up, or down
+#           from the original state and the cost is 1.0 for each
+#         """
+#         succ = []
+#
+#         for a in state.legalMoves():
+#             #succ.append((state.result(a), a,state, 1))
+#             succ.append((state.result(a,state),a))
+#         return succ
+#
+#     def getCostOfActions(self, actions):
+#         """
+#         We already know the Cost of action in "getScuccessors" we add this to
+#
+#         self.g in state.results
+#
+#         """
+#         return 1
+#
+#
+#     def getHeuristic(self,state):
+#
+#         sum1 = 0
+#         curr  = state.cells
+#
+#         for x in range(3):
+#             for y in range(3):
+#                 now = curr[x][y]
+#                 if now != 0:
+#                     sum1 += (now%3-x) + (now//3-y)
+#
+#         return sum1
         
     
 #Main program
-puzzle = createRandomEightPuzzle(15)
-problem = EightPuzzleSearchProblem(puzzle)
-path = searchAlt.aStarSearch(problem)
+puzzle = createRandomMancala(15)
 
-print("DONE")
-print('Search found a path of %d moves: ' % (len(path)))
-for i in path:
-    print(i)
+# problem = EightPuzzleSearchProblem(puzzle)
+# path = searchAlt.aStarSearch(problem)
+#
+# print("DONE")
+# print('Search found a path of %d moves: ' % (len(path)))
+# for i in path:
+#     print(i)
 
 
-puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
-for i in range(100):
-    # Execute a random legal move
-    rand_player = random.choice([0, 1])
-    rand_legal_move = random.choice(puzzle.legalMoves(rand_player))
-    puzzle = puzzle.result(rand_legal_move)
-
-puzzle.result(puzzle.legalMoves(rand_player)[0])
+# puzzle = MancalaState((0, 0, np.full((2, 6), 4)))
+# for i in range(100):
+#     # Execute a random legal move
+#     rand_player = random.choice([0, 1])
+#     rand_legal_move = random.choice(puzzle.legalMoves(rand_player))
+#     puzzle = puzzle.result(rand_legal_move)
+#
+# puzzle.result(puzzle.legalMoves(rand_player)[0])
