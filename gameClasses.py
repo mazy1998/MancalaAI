@@ -74,16 +74,22 @@ class MancalaState:
         print(f'movesNext initially set to: {movesNext}')
 
         while amount != 0:
-
+            print(amount,current)
             if current[0] == 1:
                 if current[1] == 5:
+                    print(f'amount: {amount}')
                     newBoard.plScore += 1
 
-                    if amount == 0:
-                        current = [0, 5]
-                    else:
+                    # if amount == 0:
+                    #     current = [0, 5]
+
+                    if amount == 1:
                         movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
                         print('movesNext set to 1')
+
+                    else:
+                        # movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
+                        # print('movesNext set to 1')
                         current = [0, 6]  # This index doesn't exist in the array??
                 else:
                     if amount == 1 and current[0] == move[0]:
@@ -129,6 +135,15 @@ class MancalaState:
             amount -= 1
 
         return newBoard, movesNext
+
+    def eval(self, playerNo):
+        score = self.plScore - self.aiScore
+        # Return score if playerNo == 1. Return -score if playerNo == 0.
+        if playerNo == 1:
+            return score
+        else:
+            return -score
+
 
     # Utilities for comparison and display
     # def __eq__(self, other):
@@ -196,8 +211,8 @@ a = MancalaState(state)
 # print(a.result( (0,2)))
 # print(a.result( (1,0)))
 # print(a.result( (0,1)))
-print(a.result( (1,1)))
+# print(a.result( (1,1)))
 
-result = a.result((0, 3))
+result = a.result((1, 3))
 print(result[0])
 print(result[1])
