@@ -57,7 +57,7 @@ class MancalaState:
 
     def result(self, move):
         """
-          Returns a new Mancala state with the move applied to it.
+          Returns a new Mancala state with the move applied to it as well as the player who has the next turn.
         NOTE: This function *does not* change the current object. Instead, it returns a new object.
 
         """
@@ -68,6 +68,11 @@ class MancalaState:
         #        player = move[0]
         newBoard.board[move[0]][move[1]] = 0
 
+        # the other player should have the next move unless last pebble lands in the same player's mancala
+        nextMoveDict = {0: 1, 1: 0}
+        movesNext = nextMoveDict[move[0]]
+        print(f'movesNext initially set to: {movesNext}')
+
         while amount != 0:
 
             if current[0] == 1:
@@ -77,7 +82,9 @@ class MancalaState:
                     if amount == 0:
                         current = [0, 5]
                     else:
-                        current = [0, 6]
+                        movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
+                        print('movesNext set to 1')
+                        current = [0, 6]  # This index doesn't exist in the array??
                 else:
                     if amount == 1 and current[0] == move[0]:
 
@@ -100,6 +107,8 @@ class MancalaState:
 
                     if amount == 0:
                         current = [1, 0]
+                    if amount == 1:  # Added by mali. Check if this is correct
+                        movesNext = 0
                     else:
                         current = [1, -1]
                 else:
@@ -119,7 +128,7 @@ class MancalaState:
 
             amount -= 1
 
-        return newBoard
+        return newBoard, movesNext
 
     # Utilities for comparison and display
     # def __eq__(self, other):
@@ -161,14 +170,14 @@ class MancalaState:
         return self.__getAsciiString()
 
 
-leboard = np.array([[3,2,1,1,1,1],
-                    [1,0,0,1,1,0]])
+# leboard = np.array([[3,2,1,1,1,1],
+#                     [1,0,0,1,1,0]])
 
 # leboard = np.zeros((2, 6))
 
-# state = [0,0,np.full((2,6), 4)]
+state = [0,0,np.full((2,6), 4)]
 
-state = [0,0,leboard]
+# state = [0,0,leboard]
 #
 a = MancalaState(state)
 #
@@ -187,3 +196,8 @@ a = MancalaState(state)
 # print(a.result( (0,2)))
 # print(a.result( (1,0)))
 # print(a.result( (0,1)))
+print(a.result( (1,1)))
+
+result = a.result((0, 3))
+print(result[0])
+print(result[1])
