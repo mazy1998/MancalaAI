@@ -3,7 +3,7 @@ from p5 import *
 from gameClasses import *
 
 pots = []
-turn = 0
+turn = 1
 gameOver = False
 mouseIndex = 0
 pebblePosVar = 20
@@ -300,8 +300,10 @@ def mouse_pressed():
 
 
 def convert_state(s):
-    s[2][0] = s[2][0][::-1]
+
     temp = list(s[2].flatten())
+    print(temp[0:6])
+    temp[0:6] = temp[0:6][::-1]
     # player on right
     temp.insert(6, s[0])
     # player on left
