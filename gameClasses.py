@@ -139,8 +139,11 @@ class MancalaState:
 
         return newBoard, extraMove
 
-    def eval(self):
-        return self.plScore - self.aiScore
+    def eval(self, max_player):
+        if max_player == 1:
+            return self.plScore - self.aiScore
+        else:
+            return self.aiScore - self.plScore
         # Return score if playerNo == 1. Return -score if playerNo == 0.
         # if playerNo == 1:
         #     return score
@@ -194,27 +197,29 @@ def print_mm_log(move, depth, value): #Print log for minimax
 
 
 # Min Max
-def minimax(state, depth_limit):
-    return maxM(state, depth_limit, 0, False)  # return board, val
+def minimax(state, depth_limit, max_player):
+    return maxM(state, depth_limit, 0, max_player, False)  # return board, val
 
 
-def maxM(state, depth_limit, depth, extra_move):
+def maxM(state, depth_limit, depth, max_player, extra_move):
     if state.isTerminal() or (depth == depth_limit and not extra_move):
         # print(f'Returned max move {state}, {state.eval()} at depth {depth} ')
-        return state, state.eval()
+        return state, state.eval(max_player)
 
-    best_state, best_val = state, "-Infinity"  # Should this be state.eval?
+    best_state, best_val = state, -np.Inf # Should this be state.eval?
     depth_next = depth + 1 if not extra_move else depth
     print(f'maxM called at depth {depth} with best val {best_val}')
 
-    for move in state.legalMoves(1):
+    for move in state.legalMoves(max_player):
+        print('Max evaluating move: ', move)
+
         next_board, next_extra = state.result(move)
 
         if next_extra:
-            b, v = maxM(next_board, depth_limit, depth_next, next_extra)
+            b, v = maxM(next_board, depth_limit, depth_next, max_player, next_extra)
         else:
-            b, v = minM(next_board, depth_limit, depth_next, next_extra)
-        if best_val == "-Infinity" or v > best_val:
+            b, v = minM(next_board, depth_limit, depth_next, max_player, next_extra)
+        if v > best_val:
             best_state = next_board if not next_extra else b
             best_val = v
             print('max move: ', move, depth, best_val)
@@ -222,24 +227,24 @@ def maxM(state, depth_limit, depth, extra_move):
     return best_state, best_val
 
 
-def minM(state, depth_limit, depth, extra_move):  # extra_move boolean tells if it has free move available
+def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boolean tells if it has free move available
 
     if state.isTerminal() or (depth == depth_limit and not extra_move):
         # print_mm_log(board.move_name, depth, boardval)
-        return state, state.eval()
+        return state, state.eval(max_player)
 
-    best_state, best_val = state, "Infinity"  # Should this be state.eval?
+    best_state, best_val = state, np.Inf  # Should this be state.eval?
     depth_next = depth + 1 if not extra_move else depth
     print(f'minM called at depth {depth} with best val {best_val}')
 
-    for move in state.legalMoves(0):
+    for move in state.legalMoves(1 - max_player):
         next_board, next_extra = state.result(move)
 
         if next_extra:
-            b, v = maxM(next_board, depth_limit, depth_next, next_extra)
+            b, v = maxM(next_board, depth_limit, depth_next, max_player, next_extra)
         else:
-            b, v = minM(next_board, depth_limit, depth_next, next_extra)
-        if best_val == "Infinity" or v < best_val:
+            b, v = minM(next_board, depth_limit, depth_next, max_player, next_extra)
+        if best_val == np.Inf or v < best_val:
             best_state = next_board if not next_extra else b
             best_val = v
             print(move, depth, best_val)
@@ -292,5 +297,5 @@ a = MancalaState(state)
 # print(result[0])
 # print(result[1])
 
-
-minimax(a, 2)
+result = minimax(a, 4, 0)
+print("MINMAX RETURNED: ", result[0], result[1])
