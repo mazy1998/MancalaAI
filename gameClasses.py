@@ -97,7 +97,7 @@ class MancalaState:
                     if amount == 1 and current[0] == original[0]:
                         # movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
                         # print('movesNext set to 1')
-                        print(current,original)
+                        # print(current,original)
                         extraMove = True
 
                     else:
@@ -127,7 +127,7 @@ class MancalaState:
                     if amount == 0:
                         current = [1, 0]
                     if amount == 1 and current[0] == original[0]:
-                        print(current,original)
+                        # print(current,original)
                         # movesNext = 0
                         extraMove = True
                     else:
@@ -266,12 +266,15 @@ def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boole
 
 
 def moveRandom(state,player):
-    board = [0,True]
-    while board[1]:
+    board = [state,True]
+    while not(a.isTerminal()) and board[1]:
         moves = state.legalMoves(player)
         move = random.choice(moves)
         board = state.result(move)
-    print(board[0].board)
+        
+        if board[0].isTerminal() or len(moves) == 1:
+            break
+    # print(board[0].board)
     return board
 
 
@@ -308,7 +311,8 @@ lose = [26,20,np.array([[1,0,0,0,0,0],[0,0,0,0,1,0]])]
 
 # state = [0,0,leboard]
 #
-a = MancalaState(testing)
+a = MancalaState(initial)
+print(a)
 #
 # print(a.legalMoves(1))
 #
