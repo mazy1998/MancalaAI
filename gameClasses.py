@@ -6,6 +6,7 @@ Created on Fri Nov 22 15:43:35 2019
 @author: mazeyarmoeini
 """
 import numpy as np
+import random
 
 # state = [0,0,np.full((2,6), 4)]
 # MancalaState(state)
@@ -253,7 +254,14 @@ def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boole
     return best_state, best_val
 
 
-
+def moveRandom(state,player):
+    board = [0,True]
+    while board[1]:
+        moves = state.legalMoves(player)
+        move = random.choice(moves)
+        board = state.result(move)
+    print(board[0].board)
+    return board
 
 
 
@@ -297,5 +305,5 @@ a = MancalaState(state)
 # print(result[0])
 # print(result[1])
 
-result = minimax(a, 4, 0)
-print("MINMAX RETURNED: ", result[0], result[1])
+# result = minimax(a, 4, 0)
+# print("MINMAX RETURNED: ", result[0], result[1])
