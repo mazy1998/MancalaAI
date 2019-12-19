@@ -1,9 +1,6 @@
 from p5 import *
-import time
 
 from gameClasses import *
-
-#comment
 
 pots = []
 turn = 1
@@ -12,9 +9,17 @@ mouseIndex = 0
 pebblePosVar = 20
 baseSeed = 0
 winner = 0
+splashscreen = True
+tfont = 0
+cfont = 0
+gfont = 0
+opp = 0
 
-
+# index 6 of board is AI score i.e LHS and index 13 is P1 score i.e. RHS
 def setup():
+    global tfont
+    global cfont
+    global gfont
     size(1000, 300)
     # frameRate(30)
     title("Mancala AI")
@@ -32,79 +37,119 @@ def setup():
     for i in range(14):
         pots[i].update()
     print(pots)
+    tfont = create_font("Oswald-Bold.ttf",30)
+    cfont = create_font("Oswald-Bold.ttf",20)
+    gfont = create_font("Oswald-Bold.ttf",20)
     print("-=:SETUP COMPLETE:=-")
 
 
 def draw():
-    background(108, 91, 123)
+    # background(108, 91, 123)
     global gameOver
     global turn
     global mouseIndex
     global baseSeed
     global winner
-
+    global splashscreen
+    global tfont
+    global cfont
+    global gfont
+    global opp
+    global a
     # background(108,91,123)
     background(53, 92, 125)
-    pebbleSum = 0
 
-    # # updating pots and drawing pebbles
-    for i in range(14):
-        pots[i].update()
-        pebbleSum += pots[i].count
+    if splashscreen:
+        stroke(0)
+        stroke_weight(5)
+        fill(248, 177, 149)
+        rect(((width / 2) - 150, (height / 2) - 50), 300, 75)
 
-        # if our pot
-        if pots[i].isBig and pots[i].index == 6:
-            drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 100, True, False)
-    #     # if opponent pot
-        elif pots[i].isBig and pots[i].index == 13:
-            drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 0, True, False)
-    #     # other pots
-        else:
-            drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 50, False, False)
+        fill(0)
+        no_stroke()
+        text_align("CENTER", "CENTER")
+        text_font(tfont)
 
-    # pebbleSUM allows us to check that the number of pebbles is what it should be
-    if pebbleSum != 48:
-        print("MANUAL ERROR: Uneven sum of pebbles: {}".format(pebbleSum))
+        text("Mancala", (width / 2, (height / 2)-100))
+        text_font(cfont)
+        text("Player 2", (width / 2, (height / 2)-20))
 
-    # Checks to see if game is over
-    p1 = 0
-    for i in range(6):
-        p1 += pots[i].count
-    if p1 == 0 and not gameOver:
-        gameOver = True
+        stroke(0)
+        stroke_weight(5)
+        fill(248, 177, 149)
+        rect(((width / 2) - 150, (height / 2) + 50), 300, 75)
 
-    p2 = 0
-    for i in range(6):
-        p2 += pots[i + 7].count
-    if p2 == 0 and not gameOver:
-        gameOver = True
+        fill(0)
+        no_stroke()
+        # text_size(45)
+        text_align("CENTER", "CENTER")
+        text("AI", (width / 2, (height / 2) + 80))
+    
+    else:
+        
+        pebbleSum = 0
+        board = convert_state([a.aiScore,a.plScore,a.board])
+        # # updating pots and drawing pebbles
+        for i in range(14):
+            pots[i].count = board[i]
+            pots[i].update()
+            pebbleSum += pots[i].count
 
-    # Logic for when game is over
-    if gameOver:
-        print("Game Over")
-        if (pots[6].count > pots[13].count):
-            winner = 0
-        elif (pots[6].count < pots[13].count):
-            winner = 1
-        else:
-            winner = 2
+            # if our pot
+            if pots[i].isBig and pots[i].index == 6:
+                drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 100, True, False)
+        #     # if opponent pot
+            elif pots[i].isBig and pots[i].index == 13:
+                drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 0, True, False)
+        #     # other pots
+            else:
+                drawPebbles(pots[i].index * baseSeed, pots[i].count, pots[i].x + 50, pots[i].y + 50, False, False)
 
-    # black outline
-    no_fill()
-    stroke(0)
-    stroke_weight(4)
-    rect((90, 50), 820, 200)
-    #
-    # Highlighting cursor
-    if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
+        # pebbleSUM allows us to check that the number of pebbles is what it should be
+        if pebbleSum != 48:
+            print("MANUAL ERROR: Uneven sum of pebbles: {}".format(pebbleSum))
+
+        namecards()
+            # black outline
         no_fill()
-        stroke_weight(6)
-        rect((pots[mouseIndex].x - 3, pots[mouseIndex].y - 3), 106, 106)
-    #
-    # NAMECARDS
-    namecards()
-    if gameOver:
-        endgame(winner)
+        stroke(0)
+        stroke_weight(4)
+        rect((90, 50), 820, 200)
+
+        if gameOver:
+            # print("Game Over")
+            if (a.aiScore < a.plScore):
+                winner = 1
+            elif (a.aiScore > a.plScore):
+                winner = 2
+            else:
+                winner = 0
+            endgame(winner)
+        else:
+ 
+            if opp == 1 and turn == 0:
+                print("computer move")
+                result = minimax(a, 2, 0)
+                # time.sleep(1)
+                a = result[0]
+                # board = convert_state([a.aiScore, a.plScore, a.board])
+                print(result[0].board)
+                board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
+                
+                print("AI score is {}".format(result[0].aiScore))
+                print("P1 score is {}".format(result[0].plScore))
+                for i in range(14):
+                    pots[i].count = board[i]
+                turn = 1
+            # Highlighting cursor
+            if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
+                no_fill()
+                stroke_weight(6)
+                rect((pots[mouseIndex].x - 3, pots[mouseIndex].y - 3), 106, 106)
+                
+            # Checks to see if game is over
+            gameOver = a.isTerminal()
+
 
 
 class Pots():
@@ -258,82 +303,68 @@ def mouse_pressed():
     """
     I should call the function result and then update the pots accordingly
     """
+    global splashscreen
     global indexmap
     global mouseIndex
     global winner
     global gameOver
+    global turn
     global a
+    global opp
 
-    print(mouseIndex)
-    if mouseIndex != 6 and mouseIndex != 13:
-        move = indexmap[mouseIndex]
-        #if move is valid
-        if turn == move[0]:
-            print("Valid move")
-            result = a.result(move)
-            a = result[0]
-            # board = convert_state([a.aiScore, a.plScore, a.board])
-            print(result[0].board)
-            board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-        
-            print("AI score is {}".format(result[0].aiScore))
-            print("P1 score is {}".format(result[0].plScore))
-            for i in range(14):
-                pots[i].count = board[i]
+    if splashscreen:
 
-            #calls for AI to move
-            if result[1] == False:
-                print("computer move")
-                
-                # result = moveRandom(a,0)
-                # draw()
-                time.sleep(2)
-                result = minimax(a, 2, 0)
+        rect(((width / 2) - 150, (height / 2) - 50), 300, 75)
 
+        rect(((width / 2) - 150, (height / 2) + 50), 300, 75)
+        if mouse_x > (width/2)-150 and mouse_x<(width/2)+ 300 and mouse_y >(height/2)-50 and mouse_y < (height/2) + 25:
+            print("Playing against Player 2")
+            opp = 0
+            splashscreen = False
+        elif mouse_x > (width/2)-150 and mouse_x<(width/2)+ 300 and mouse_y >(height/2)+50 and mouse_y < (height/2) + 125:
+            print("Playing against AI")
+            opp = 1
+            splashscreen = False
+    else:
 
+        # print(mouseIndex)
+        if mouseIndex != 6 and mouseIndex != 13:
+            move = indexmap[mouseIndex]
+            if turn == move[0] and pots[mouseIndex].count != 0:
+                print("Valid move")
+
+                result = a.result(move)
                 a = result[0]
-                # board = convert_state([a.aiScore, a.plScore, a.board])
-                print(result[0].board)
                 board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-                
-                print("AI score is {}".format(result[0].aiScore))
-                print("P1 score is {}".format(result[0].plScore))
+                # print(board)
+                # print("AI score is {}".format(result[0].aiScore))
+                # print("P1 score is {}".format(result[0].plScore))
                 for i in range(14):
                     pots[i].count = board[i]
-      
 
+                if result[1] == False:
+                    if opp == 0:
+                        turn = int(not(turn))
+                        if turn == 1:
+                            print("Player 1 turn")
+                        else:
+                            print("Player 2 turn")
+                    else:
+                        turn = int(not(turn))
+                        print("YOU NEED TO CALL YOUR AI")
+                        
 
-            
-                
-
-
-
-        else:
-            """
-            This needs to change so that it works correctly for AI
-            """
-            print("Invalid Move")
-            result = a.result(move)
-            print(result[0].board)
-            #
-            board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-           
-            print("AI score is {}".format(result[0].aiScore))
-            print("P1 score is {}".format(result[0].plScore))
-
-    # if mouseIndex == 2:
-    #
-    #     for i in range(pots[mouseIndex].count):
-    #         pots[mouseIndex + i + 1].count += 1
-    #     pots[mouseIndex].count = 0
-    #     winner = 1
-    #     gameOver = True
+            else:
+                """
+                This needs to change so that it works correctly for AI
+                """
+                print("Invalid Move")
 
 
 def convert_state(s):
 
     temp = list(s[2].flatten())
-
+#    print(temp[0:6])
     temp[0:6] = temp[0:6][::-1]
     # player on right
     temp.insert(6, s[0])
@@ -343,6 +374,7 @@ def convert_state(s):
 
 
 def namecards():
+    global opp
     fill(192, 108, 132)
     stroke(0)
     stroke_weight(5)
@@ -353,12 +385,16 @@ def namecards():
     no_stroke()
     # text_size(25)
     text_align("CENTER", "TOP")
-    text("AI", (125 / 2, 1))
+    if opp == 0:
+        text("Player 2", (125 / 2, 1))
+    else:
+        text("AI", (125 / 2, 1))
     text("Player 1", (width - (125 / 2), 1))
 
 
 def endgame(winner):
-    if (winner == 0):
+    global opp
+    if (winner == 1):
 
         stroke(0)
         stroke_weight(5)
@@ -381,7 +417,10 @@ def endgame(winner):
         no_stroke()
         # text_size(45)
         text_align("CENTER", "CENTER")
-        text("Player 2 Wins!", (width / 2, height / 2))
+        if opp == 0:
+            text("Player 2 Wins!", (width / 2, height / 2))
+        else:
+            text("AI Wins!", (width / 2, height / 2))
     else:
 
         stroke(0)

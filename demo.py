@@ -1,9 +1,6 @@
 from p5 import *
-import time
 
 from gameClasses import *
-
-#comment
 
 pots = []
 turn = 1
@@ -13,7 +10,7 @@ pebblePosVar = 20
 baseSeed = 0
 winner = 0
 
-
+# index 6 of board is AI score i.e LHS and index 13 is P1 score i.e. RHS
 def setup():
     size(1000, 300)
     # frameRate(30)
@@ -42,13 +39,15 @@ def draw():
     global mouseIndex
     global baseSeed
     global winner
-
+    
     # background(108,91,123)
     background(53, 92, 125)
     pebbleSum = 0
-
+    
+    board = convert_state([a.aiScore,a.plScore,a.board])
     # # updating pots and drawing pebbles
     for i in range(14):
+        pots[i].count = board[i]
         pots[i].update()
         pebbleSum += pots[i].count
 
@@ -66,45 +65,45 @@ def draw():
     if pebbleSum != 48:
         print("MANUAL ERROR: Uneven sum of pebbles: {}".format(pebbleSum))
 
-    # Checks to see if game is over
-    p1 = 0
-    for i in range(6):
-        p1 += pots[i].count
-    if p1 == 0 and not gameOver:
-        gameOver = True
-
-    p2 = 0
-    for i in range(6):
-        p2 += pots[i + 7].count
-    if p2 == 0 and not gameOver:
-        gameOver = True
-
-    # Logic for when game is over
-    if gameOver:
-        print("Game Over")
-        if (pots[6].count > pots[13].count):
-            winner = 0
-        elif (pots[6].count < pots[13].count):
-            winner = 1
-        else:
-            winner = 2
-
-    # black outline
+    namecards()
+        # black outline
     no_fill()
     stroke(0)
     stroke_weight(4)
     rect((90, 50), 820, 200)
-    #
-    # Highlighting cursor
-    if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
-        no_fill()
-        stroke_weight(6)
-        rect((pots[mouseIndex].x - 3, pots[mouseIndex].y - 3), 106, 106)
-    #
-    # NAMECARDS
-    namecards()
+
     if gameOver:
+        # print("Game Over")
+        if (a.aiScore < a.plScore):
+            winner = 1
+        elif (a.aiScore > a.plScore):
+            winner = 2
+        else:
+            winner = 0
         endgame(winner)
+    else:
+        # Highlighting cursor
+        if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
+            no_fill()
+            stroke_weight(6)
+            rect((pots[mouseIndex].x - 3, pots[mouseIndex].y - 3), 106, 106)
+        
+        # Checks to see if game is over
+        gameOver = a.isTerminal()
+        
+#        p1 = 0
+#        p2 = 0
+#        for i in range(6):
+#            p1 += pots[i + 7].count
+#            p2 += pots[i].count
+#
+#        if (p1 == 0 or p2 == 0) and not gameOver:
+#            gameOver = True
+#            a.plScore += p1
+#            a.aiScore += p2
+#            a.board = np.zeros((2,6)).astype(int)
+#            print("The AI score is {}, the Player score is {}".format(a.aiScore,a.plScore))
+
 
 
 class Pots():
@@ -262,64 +261,42 @@ def mouse_pressed():
     global mouseIndex
     global winner
     global gameOver
+    global turn
     global a
-
     print(mouseIndex)
     if mouseIndex != 6 and mouseIndex != 13:
         move = indexmap[mouseIndex]
-        #if move is valid
-        if turn == move[0]:
+        if turn == move[0] and pots[mouseIndex].count != 0:
             print("Valid move")
+
             result = a.result(move)
             a = result[0]
             # board = convert_state([a.aiScore, a.plScore, a.board])
-            print(result[0].board)
+#            print(result[0].board)
             board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-        
+            print(board)
             print("AI score is {}".format(result[0].aiScore))
             print("P1 score is {}".format(result[0].plScore))
             for i in range(14):
                 pots[i].count = board[i]
-
-            #calls for AI to move
             if result[1] == False:
-                print("computer move")
+                turn = int(not(turn))
+                if turn == 1:
+                    print("Player 1 turn")
+                else:
+                    print("AI/Player 2 turn")
                 
-                # result = moveRandom(a,0)
-                # draw()
-                time.sleep(2)
-                result = minimax(a, 2, 0)
-
-
-                a = result[0]
-                # board = convert_state([a.aiScore, a.plScore, a.board])
-                print(result[0].board)
-                board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-                
-                print("AI score is {}".format(result[0].aiScore))
-                print("P1 score is {}".format(result[0].plScore))
-                for i in range(14):
-                    pots[i].count = board[i]
-      
-
-
             
                 
-
-
+                
+    
 
         else:
             """
             This needs to change so that it works correctly for AI
             """
             print("Invalid Move")
-            result = a.result(move)
-            print(result[0].board)
-            #
-            board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-           
-            print("AI score is {}".format(result[0].aiScore))
-            print("P1 score is {}".format(result[0].plScore))
+
 
     # if mouseIndex == 2:
     #
@@ -333,7 +310,7 @@ def mouse_pressed():
 def convert_state(s):
 
     temp = list(s[2].flatten())
-
+#    print(temp[0:6])
     temp[0:6] = temp[0:6][::-1]
     # player on right
     temp.insert(6, s[0])
@@ -353,12 +330,12 @@ def namecards():
     no_stroke()
     # text_size(25)
     text_align("CENTER", "TOP")
-    text("AI", (125 / 2, 1))
+    text("Player 2", (125 / 2, 1))
     text("Player 1", (width - (125 / 2), 1))
 
 
 def endgame(winner):
-    if (winner == 0):
+    if (winner == 1):
 
         stroke(0)
         stroke_weight(5)
@@ -381,7 +358,7 @@ def endgame(winner):
         no_stroke()
         # text_size(45)
         text_align("CENTER", "CENTER")
-        text("Player 2 Wins!", (width / 2, height / 2))
+        text("Player 2/ AI Wins!", (width / 2, height / 2))
     else:
 
         stroke(0)

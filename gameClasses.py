@@ -37,7 +37,15 @@ class MancalaState:
         self.boardShape = self.board.shape  # default (2,6)
 
     def isTerminal(self):
-        return not np.any(self.board)
+        aiboard = self.board[0].sum()
+        plboard = self.board[1].sum()
+        over = False
+        if aiboard == 0 or plboard ==0:
+            over = True
+            self.aiScore += aiboard
+            self.plScore += plboard
+            self.board = np.zeros((2,6)).astype(int)
+        return over
 
     def legalMoves(self, player):
         """
@@ -209,10 +217,10 @@ def maxM(state, depth_limit, depth, max_player, extra_move):
 
     best_state, best_val = state, -np.Inf # Should this be state.eval?
     depth_next = depth + 1 if not extra_move else depth
-    print(f'maxM called at depth {depth} with best val {best_val}')
+    # print(f'maxM called at depth {depth} with best val {best_val}')
 
     for move in state.legalMoves(max_player):
-        print('Max evaluating move: ', move)
+        # print('Max evaluating move: ', move)
 
         next_board, next_extra = state.result(move)
 
@@ -223,7 +231,7 @@ def maxM(state, depth_limit, depth, max_player, extra_move):
         if v > best_val:
             best_state = next_board if not next_extra else b
             best_val = v
-            print('max move: ', move, depth, best_val)
+            # print('max move: ', move, depth, best_val)
 
     return best_state, best_val
 
@@ -236,7 +244,7 @@ def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boole
 
     best_state, best_val = state, np.Inf  # Should this be state.eval?
     depth_next = depth + 1 if not extra_move else depth
-    print(f'minM called at depth {depth} with best val {best_val}')
+    # print(f'minM called at depth {depth} with best val {best_val}')
 
     for move in state.legalMoves(1 - max_player):
         next_board, next_extra = state.result(move)
@@ -274,15 +282,28 @@ def moveRandom(state,player):
 
 
 # leboard = np.array([[3,2,1,1,1,1],
-#                     [1,0,0,1,1,0]])
+#                      [,0,0,1,1,0]])
 
 # leboard = np.zeros((2, 6))
 
-state = [0,0,np.full((2,6), 4)]
+state = [0,0,np.full((2,6), 1)]
+
+# initial
+initial = [0,0,np.full((2,6), 4)]
+# tie
+tie = [23,23,np.array([[0,0,0,0,0,1],[0,0,0,0,0,1]])]
+# p1 win
+win = [18,26,np.array([[0,0,0,1,1,1],[0,0,0,0,1,0]])]
+# AI win
+lose = [26,20,np.array([[0,0,0,0,0,1],[0,0,0,0,0,1]])]
+
+
+
+lose = [26,20,np.array([[1,0,0,0,0,0],[0,0,0,0,1,0]])]
 
 # state = [0,0,leboard]
 #
-a = MancalaState(state)
+a = MancalaState(initial)
 #
 # print(a.legalMoves(1))
 #
