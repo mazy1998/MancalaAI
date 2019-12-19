@@ -289,8 +289,6 @@ def mouse_pressed():
                 # draw()
                 time.sleep(2)
                 result = minimax(a, 2, 0)
-
-
                 a = result[0]
                 # board = convert_state([a.aiScore, a.plScore, a.board])
                 print(result[0].board)

@@ -125,23 +125,25 @@ def draw():
             else:
                 winner = 0
             endgame(winner)
+
         else:
  
-            if opp == 1 and turn == 0:
-                print("computer move")
-                result = minimax(a, 2, 0)
-                # time.sleep(1)
-                a = result[0]
-                # board = convert_state([a.aiScore, a.plScore, a.board])
-                print(result[0].board)
-                board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
+            # if opp == 1 and turn == 0:
+            #     print("computer move")
+            #     result = minimax(a, 2, 0)
+            #     # time.sleep(1)
+            #     a = result[0]
+            #     # board = convert_state([a.aiScore, a.plScore, a.board])
+            #     print(result[0].board)
+            #     board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
                 
-                print("AI score is {}".format(result[0].aiScore))
-                print("P1 score is {}".format(result[0].plScore))
-                for i in range(14):
-                    pots[i].count = board[i]
-                turn = 1
+            #     print("AI score is {}".format(result[0].aiScore))
+            #     print("P1 score is {}".format(result[0].plScore))
+            #     for i in range(14):
+            #         pots[i].count = board[i]
+            #     turn = 1
             # Highlighting cursor
+
             if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
                 no_fill()
                 stroke_weight(6)
@@ -335,10 +337,10 @@ def mouse_pressed():
 
                 result = a.result(move)
                 a = result[0]
+                print(result[0].board)
                 board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-                # print(board)
-                # print("AI score is {}".format(result[0].aiScore))
-                # print("P1 score is {}".format(result[0].plScore))
+                print("AI score is {}".format(result[0].aiScore))
+                print("P1 score is {}".format(result[0].plScore))
                 for i in range(14):
                     pots[i].count = board[i]
 
@@ -350,8 +352,15 @@ def mouse_pressed():
                         else:
                             print("Player 2 turn")
                     else:
-                        turn = int(not(turn))
-                        print("YOU NEED TO CALL YOUR AI")
+                        result = minimax(a, 2, 0)
+                        a = result[0]
+                        # board = convert_state([a.aiScore, a.plScore, a.board])
+                        print(result[0].board)
+                        board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
+                        print("AI score is {}".format(result[0].aiScore))
+                        print("P1 score is {}".format(result[0].plScore))
+                        for i in range(14):
+                            pots[i].count = board[i]
                         
 
             else:

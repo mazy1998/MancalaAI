@@ -75,6 +75,7 @@ class MancalaState:
 
         amount = newBoard.board[move[0]][move[1]]
         current = [move[0], move[1]]
+        original  = [move[0], move[1]]
         #        player = move[0]
         newBoard.board[move[0]][move[1]] = 0
 
@@ -93,9 +94,10 @@ class MancalaState:
                     # if amount == 0:
                     #     current = [0, 5]
 
-                    if amount == 1:
+                    if amount == 1 and current[0] == original[0]:
                         # movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
                         # print('movesNext set to 1')
+                        print(current,original)
                         extraMove = True
 
                     else:
@@ -124,7 +126,8 @@ class MancalaState:
 
                     if amount == 0:
                         current = [1, 0]
-                    if amount == 1:
+                    if amount == 1 and current[0] == original[0]:
+                        print(current,original)
                         # movesNext = 0
                         extraMove = True
                     else:
@@ -256,7 +259,7 @@ def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boole
         if best_val == np.Inf or v < best_val:
             best_state = next_board if not next_extra else b
             best_val = v
-            print(move, depth, best_val)
+            # print(move, depth, best_val)
         # print_mm_log(board.move_name, depth, optimumVal)
 
     return best_state, best_val
@@ -298,12 +301,14 @@ win = [18,26,np.array([[0,0,0,1,1,1],[0,0,0,0,1,0]])]
 lose = [26,20,np.array([[0,0,0,0,0,1],[0,0,0,0,0,1]])]
 
 
+testing = [11,6,np.array([[0,9,9,0,0,0],[0,5,1,0,0,7]])]
+
 
 lose = [26,20,np.array([[1,0,0,0,0,0],[0,0,0,0,1,0]])]
 
 # state = [0,0,leboard]
 #
-a = MancalaState(initial)
+a = MancalaState(testing)
 #
 # print(a.legalMoves(1))
 #
