@@ -127,23 +127,6 @@ def draw():
             endgame(winner)
 
         else:
- 
-            # if opp == 1 and turn == 0:
-            #     print("computer move")
-            #     result = minimax(a, 2, 0)
-            #     # time.sleep(1)
-            #     a = result[0]
-            #     # board = convert_state([a.aiScore, a.plScore, a.board])
-            #     print(result[0].board)
-            #     board = convert_state([result[0].aiScore, result[0].plScore, result[0].board])
-                
-            #     print("AI score is {}".format(result[0].aiScore))
-            #     print("P1 score is {}".format(result[0].plScore))
-            #     for i in range(14):
-            #         pots[i].count = board[i]
-            #     turn = 1
-            # Highlighting cursor
-
             if (not pots[mouseIndex].isBig and pots[mouseIndex].indexY == turn and not gameOver):
                 no_fill()
                 stroke_weight(6)
@@ -153,7 +136,7 @@ def draw():
             gameOver = a.isTerminal()
 
 
-
+#Draws the pots
 class Pots():
 
     def __init__(self, index, x, y, count=4):
@@ -301,6 +284,7 @@ indexmap = {0: (0, 5), 1: (0, 4), 2: (0, 3), 3: (0, 2), 4: (0, 1), 5: (0, 0),
             7: (1, 0), 8: (1, 1), 9: (1, 2), 10: (1, 3), 11: (1, 4), 12: (1, 5)}
 
 
+#Checks Mouse Press
 def mouse_pressed():
     """
     I should call the function result and then update the pots accordingly
@@ -351,7 +335,11 @@ def mouse_pressed():
                             print("Player 1 turn")
                         else:
                             print("Player 2 turn")
+                    #the AI moves here
                     else:
+                        '''
+                        THIS IS WHERE YOU CALL THE AI
+                        '''
                         result = alphabeta(a, 2, 0)
                         a = result[0]
                         # board = convert_state([a.aiScore, a.plScore, a.board])
@@ -369,7 +357,7 @@ def mouse_pressed():
                 """
                 print("Invalid Move")
 
-
+#flattens state
 def convert_state(s):
 
     temp = list(s[2].flatten())
@@ -381,7 +369,7 @@ def convert_state(s):
     temp.append(s[1])
     return temp
 
-
+#end game display screen
 def namecards():
     global opp
     fill(192, 108, 132)
@@ -401,6 +389,8 @@ def namecards():
     text("Player 1", (width - (125 / 2), 1))
 
 
+
+#end game display screen
 def endgame(winner):
     global opp
     if (winner == 1):
@@ -444,4 +434,5 @@ def endgame(winner):
         text("Tie!", (width / 2, height / 2))
 
 
+#the main run loop built into p5
 run()

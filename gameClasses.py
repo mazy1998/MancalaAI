@@ -8,8 +8,7 @@ Created on Fri Nov 22 15:43:35 2019
 import numpy as np
 import random
 
-# state = [0,0,np.full((2,6), 4)]
-# MancalaState(state)
+
 traverse_log = list()
 
 
@@ -31,10 +30,10 @@ class MancalaState:
 
         """
 
-        self.aiScore = state[0]            # default 0
-        self.plScore = state[1]            # default 0
-        self.board = state[2]              # default np.full((2,6), 4)
-        self.boardShape = self.board.shape  # default (2,6)
+        self.aiScore = state[0]           
+        self.plScore = state[1]           
+        self.board = state[2]              
+        self.boardShape = self.board.shape  
 
     def isTerminal(self):
         aiboard = self.board[0].sum()
@@ -67,8 +66,8 @@ class MancalaState:
 
     def result(self, move):
         """
-          Returns a new Mancala state with the move applied to it as well as the player who has the next turn.
-        NOTE: This function *does not* change the current object. Instead, it returns a new object.
+        Returns a new Mancala state with the move applied to it as well as the player who has the next turn.
+        This function *does not* change the current object. Instead, it returns a new object.
 
         """
         newBoard = MancalaState([self.aiScore, self.plScore, np.copy(self.board)])
@@ -76,34 +75,19 @@ class MancalaState:
         amount = newBoard.board[move[0]][move[1]]
         current = [move[0], move[1]]
         original  = [move[0], move[1]]
-        #        player = move[0]
         newBoard.board[move[0]][move[1]] = 0
 
-        # player gets extra move if last pebble lands in the same player's mancala
         extraMove = False
-        # nextMoveDict = {0: 1, 1: 0}
-        # movesNext = nextMoveDict[move[0]]
-        # print(f'movesNext initially set to: {movesNext}')
 
         while amount != 0:
             if current[0] == 1:
                 if current[1] == 5:
-                    # print(f'amount: {amount}')
                     newBoard.plScore += 1
-
-                    # if amount == 0:
-                    #     current = [0, 5]
-
                     if amount == 1 and current[0] == original[0]:
-                        # movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
-                        # print('movesNext set to 1')
-                        # print(current,original)
                         extraMove = True
 
                     else:
-                        # movesNext = 1  # Since player 1's move ended in their Mancala, it's their turn again
-                        # print('movesNext set to 1')
-                        current = [0, 6]  # This index doesn't exist in the array??
+                        current = [0, 6]  
                 else:
                     if amount == 1 and current[0] == move[0]:
 
@@ -127,8 +111,6 @@ class MancalaState:
                     if amount == 0:
                         current = [1, 0]
                     if amount == 1 and current[0] == original[0]:
-                        # print(current,original)
-                        # movesNext = 0
                         extraMove = True
                     else:
                         current = [1, -1]
@@ -156,47 +138,14 @@ class MancalaState:
             return self.plScore - self.aiScore
         else:
             return self.aiScore - self.plScore
-        # Return score if playerNo == 1. Return -score if playerNo == 0.
-        # if playerNo == 1:
-        #     return score
-        # else:
-        #     return -score
-
-
-    # Utilities for comparison and display
-    # def __eq__(self, other):
-    #     """
-    #         Overloads '==' such that two eightPuzzles with the same configuration
-    #       are equal.
-    #
-    #       >>> EightPuzzleState([0, 1, 2, 3, 4, 5, 6, 7, 8]) == \
-    #           EightPuzzleState([1, 0, 2, 3, 4, 5, 6, 7, 8]).result('left')
-    #       True
-    #     """
-    #     for row in range( 3 ):
-    #         if self.cells[row] != other.cells[row]:
-    #             return False
-    #     return True
 
     def __hash__(self):
         return hash(str(self.cells))
 
     def __getAsciiString(self):
         """
-          Returns a display string for the maze
+          Returns a display string for the board
         """
-        # lines = []
-        # horizontalLine = ('-' * (13))
-        # lines.append(horizontalLine)
-        # for row in self.cells:
-        #     rowLine = '|'
-        #     for col in row:
-        #         if col == 0:
-        #             col = ' '
-        #         rowLine = rowLine + ' ' + col.__str__() + ' |'
-        #     lines.append(rowLine)
-        #     lines.append(horizontalLine)
-        # return '\n'.join(lines)
         return f'AI score: {self.aiScore}, Pl score: {self.plScore}.\n{self.board}'
 
     def __str__(self):
@@ -265,6 +214,7 @@ def minM(state, depth_limit, depth, max_player, extra_move):  # extra_move boole
     return best_state, best_val
 
 
+#Random mover
 def moveRandom(state,player):
     board = [state,True]
     while not(a.isTerminal()) and board[1]:
@@ -346,12 +296,6 @@ def minAB(state, depth_limit, depth, max_player, extra_move, alpha, beta):  # ex
             best_val = v
             # print(move, depth, best_val)
 
-    # if alpha >= v and alpha != -np.Inf:
-    #     # print(f'returning min early, alpha: {alpha}, beta: {beta}')
-    #     if beta <= alpha:
-    #         print(f'aalpha: {alpha}, beta: {beta}')
-    #     return best_state, v
-
     if beta == np.Inf or v < beta:
         # print(f'updating beta', v, 'depth', depth, 'alpha', alpha)
         beta = v
@@ -362,21 +306,6 @@ def minAB(state, depth_limit, depth, max_player, extra_move, alpha, beta):  # ex
         return best_state, v
 
     return best_state, best_val
-
-
-
-
-
-
-
-
-
-
-
-# leboard = np.array([[3,2,1,1,1,1],
-#                      [,0,0,1,1,0]])
-
-# leboard = np.zeros((2, 6))
 
 state = [0,0,np.full((2,6), 1)]
 
@@ -396,30 +325,9 @@ testing = [11,6,np.array([[0,9,9,0,0,0],[0,5,1,0,0,7]])]
 lose = [26,20,np.array([[1,0,0,0,0,0],[0,0,0,0,1,0]])]
 
 # state = [0,0,leboard]
-#
+
+
+# change the state to whatever you want
 a = MancalaState(initial)
 print(a)
-#
-# print(a.legalMoves(1))
-#
-# move = a.legalMoves()[0]
 
-# if move[0] == 1:
-#     lst = a.board[1] + a.plScore +
-
-
-# print(a.result( (1,4)))
-# print(a.result( (1,3)))
-# print(a.result( (0,2)))
-# print(a.result( (0,3)))
-# print(a.result( (0,2)))
-# print(a.result( (1,0)))
-# print(a.result( (0,1)))
-# print(a.result( (1,1)))
-
-# result = a.result((1, 2))
-# print(result[0])
-# print(result[1])
-
-# result = minimax(a, 4, 0)
-# print("MINMAX RETURNED: ", result[0], result[1])
