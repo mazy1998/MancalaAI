@@ -17,23 +17,22 @@ There exist many variations of the game and our implementation is based on the r
 There are 12 slots on the board, with 4 pebbles in each at the initial state of the game. The two player trays at each end are initially empty, with the tray on the right side belonging to Player 1 and the tray on the left belonging to AI/Player 2.
 
 ## Playing
-The following screen shows up when you start the game
+The game starts by showing the following screen to the user
+
+![Splash Screen](https://raw.githubusercontent.com/mazy1998/MancalaAI/master/scr2.png)
+    
+There are two modes available
+- 2 Player Mode: Play against another human
+-  AI Mode: Play against our AI
+
+This is the initial game state
+
+![Splash Screen](https://raw.githubusercontent.com/mazy1998/MancalaAI/master/scr1.png)
 
 ## Algorithms
-
-### Minimax with Alpha-Beta Pruning
-### Alpha Beta Pruning
-### Neural Networks
-
-# Heuristics
- 
-# Conclusion
-
-
-## Class descriptions
-
-## Interface
-
-## Analysis
+- Minimax with Alpha-Beta Pruning
+- Alpha Beta Pruning
+ - Neural Networks
 
 [p5]: <https://p5.readthedocs.io/en/latest/install.html>
+[splash]: <https://raw.githubusercontent.com/mazy1998/MancalaAI/master/scr1.png>
