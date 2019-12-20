@@ -277,6 +277,92 @@ def moveRandom(state,player):
     # print(board[0].board)
     return board
 
+# Alpha Beta
+def alphabeta(state, depth_limit, max_player):
+    return maxAB(state, depth_limit, 0, max_player, False, -np.Inf, np.Inf)  # return board, val
+
+
+def maxAB(state, depth_limit, depth, max_player, extra_move, alpha, beta):
+    if state.isTerminal() or (depth == depth_limit and not extra_move):
+        # print(f'Returned max move {state}, {state.eval()} at depth {depth} ')
+        return state, state.eval(max_player)
+
+    best_state, best_val = state, -np.Inf  # Should this be state.eval?
+    depth_next = depth + 1 if not extra_move else depth
+    # print(f'maxAB called at depth {depth} with best val {best_val}')
+
+    for move in state.legalMoves(max_player):
+        # print('MaxAB evaluating move: ', move)
+
+        next_board, next_extra = state.result(move)
+
+        if next_extra:
+            b, v = maxAB(next_board, depth_limit, depth_next, max_player, next_extra, alpha, beta)
+        else:
+            b, v = minAB(next_board, depth_limit, depth_next, max_player, next_extra, alpha, beta)
+        if best_val == -np.Inf or v > best_val:
+            best_state = next_board if not next_extra else b
+            best_val = v
+            # print('max move: ', move, depth, best_val)
+
+        # if v >= beta and beta != np.Inf:
+        #     print(f'max, alpha: {alpha}, beta: {beta}')
+        #     if beta <= alpha:
+        #         print(f'alpha: {alpha}, beta: {beta}')
+        #     return best_state, v
+
+        if v > alpha or alpha == -np.Inf:
+            # print(f'updating alpha', v, 'depth', depth, 'alpha', alpha)
+            alpha = v  # change to max
+
+        # print(f'MAX alpha: {alpha}, beta: {beta}')
+        if beta <= alpha:
+            print(f'alpha: {alpha}, beta: {beta}')
+            return best_state, v
+
+    return best_state, best_val
+
+
+def minAB(state, depth_limit, depth, max_player, extra_move, alpha, beta):  # extra_move boolean tells if it has free move available
+    if beta <= alpha:
+        print(f'aaaalpha: {alpha}, beta: {beta}')
+
+    if state.isTerminal() or (depth == depth_limit and not extra_move):
+        # print_mm_log(board.move_name, depth, boardval)
+        return state, state.eval(max_player)
+
+    best_state, best_val = state, np.Inf  # Should this be state.eval?
+    depth_next = depth + 1 if not extra_move else depth
+
+    for move in state.legalMoves(1 - max_player):
+        next_board, next_extra = state.result(move)
+
+        if next_extra:
+            b, v = minAB(next_board, depth_limit, depth_next, max_player, next_extra, alpha, beta)
+        else:
+            b, v = maxAB(next_board, depth_limit, depth_next, max_player, next_extra, alpha, beta)
+        if best_val == np.Inf or v < best_val:
+            best_state = next_board if not next_extra else b
+            best_val = v
+            # print(move, depth, best_val)
+
+    # if alpha >= v and alpha != -np.Inf:
+    #     # print(f'returning min early, alpha: {alpha}, beta: {beta}')
+    #     if beta <= alpha:
+    #         print(f'aalpha: {alpha}, beta: {beta}')
+    #     return best_state, v
+
+    if beta == np.Inf or v < beta:
+        # print(f'updating beta', v, 'depth', depth, 'alpha', alpha)
+        beta = v
+
+    # print(f'MIN alpha: {alpha}, beta: {beta}')
+    if beta <= alpha:
+        # print(f'aalpha: {alpha}, beta: {beta}')
+        return best_state, v
+
+    return best_state, best_val
+
 
 
 

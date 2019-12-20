@@ -23,7 +23,8 @@ def combination():
                 # a = minimax(a,1,1)[0]
                 # print("random")
                 #pl1
-                a = minimax(a, pl, 1)[0]
+                # a = minimax(a, pl, 1)[0]
+                a = alphabeta(a, pl, 1)[0]
                 # print(a)
 
             print(str(a.aiScore)+"-"+str(a.plScore))
@@ -75,6 +76,7 @@ def timings():
     print(count)
 
 
-timings()
+combination()
+# timings()
 
 

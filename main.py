@@ -352,7 +352,7 @@ def mouse_pressed():
                         else:
                             print("Player 2 turn")
                     else:
-                        result = minimax(a, 2, 0)
+                        result = alphabeta(a, 2, 0)
                         a = result[0]
                         # board = convert_state([a.aiScore, a.plScore, a.board])
                         print(result[0].board)
